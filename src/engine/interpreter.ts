@@ -105,42 +105,4 @@ let ast;try{ast=acorn.parse(src,{ecmaVersion:2022,locations:true})}catch(e){retu
 const bad=[];scan(ast,bad);if(bad.length)return{steps:[],err:'Not supported yet: '+[...new Set(bad)].join('; ')+'.'};
 setup(root);try{M.stack=['main script'];snap('start','The whole script runs as ONE task on the call stack. Lines run top to bottom.');try{sync(body(ast.body,g))}catch(e){unc(e)}
 M.stack=[];M.env=null;M.line=0;snap('ret','The main script is finished and the stack is empty. Now the event loop checks the queues.');loop()}catch(e){if(e instanceof Unsup)return{steps:M.steps,err:e.m};return{steps:M.steps,err:'Internal simulator error: '+e.message}}return{steps:M.steps}}
-const SAMPLES=[['async/await order',`console.log("A");
-
-async function test() {
-  console.log("B");
-  await Promise.resolve();
-  console.log("C");
-}
-
-test();
-
-Promise.resolve().then(() => console.log("D"));
-
-console.log("E");`],['setTimeout vs promise',`console.log("start");
-setTimeout(() => console.log("timeout"), 0);
-Promise.resolve().then(() => console.log("promise"));
-console.log("end");`],['var vs let in a loop',`for (var i = 0; i < 3; i++) {
-  setTimeout(() => console.log("var", i), 0);
-}
-for (let j = 0; j < 3; j++) {
-  setTimeout(() => console.log("let", j), 0);
-}`],['async error handling',`function fetchUser(id) {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => id > 0 ? resolve("user" + id) : reject("bad id"), 100);
-  });
-}
-async function main() {
-  try {
-    const u = await fetchUser(1);
-    console.log("got", u);
-    await fetchUser(-1);
-  } catch (e) {
-    console.log("caught", e);
-  }
-  console.log("done");
-}
-main();
-console.log("after main");`]];
-
-export {trace,SAMPLES};
+export {trace};

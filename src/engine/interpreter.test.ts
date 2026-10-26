@@ -2,8 +2,9 @@ import { describe, it, expect } from 'vitest';
 import { trace, SAMPLES } from './index';
 const out = (src: string) => { const r = trace(src); return { err: r.err, out: r.steps.at(-1)?.out ?? [] }; };
 describe('event loop ordering', () => {
-  const expected = [['A','B','E','C','D'],['start','end','promise','timeout'],['var 3','var 3','var 3','let 0','let 1','let 2'],['after main','got user1','caught bad id','done']];
-  SAMPLES.forEach(([name, code], i) => it('sample: ' + name, () => expect(out(code).out).toEqual(expected[i])));
+  const expected: Record<string, string[]> = { 'async/await order': ['A','B','E','C','D'], 'setTimeout vs promise': ['start','end','promise','timeout'],
+    'var vs let in a loop': ['var 3','var 3','var 3','let 0','let 1','let 2'], 'async error handling': ['after main','got user1','caught bad id','done'] };
+  Object.entries(expected).forEach(([name, want]) => it('sample: ' + name, () => expect(out(SAMPLES.find(s => s[0] === name)![1]).out).toEqual(want)));
   it('promise returned from then costs extra ticks', () => expect(out(`
 Promise.resolve().then(() => { console.log(1); return Promise.resolve(); }).then(() => console.log(2));
 Promise.resolve().then(() => console.log("a")).then(() => console.log("b")).then(() => console.log("c")).then(() => console.log("d"));`).out).toEqual(['1','a','b','c','2','d']));
