@@ -1,4 +1,4 @@
-import { useEffect, useId, useState, type ReactNode } from 'react';
+import { useEffect, useId, useLayoutEffect, useRef, useState, type ReactNode } from 'react';
 import { trace, SAMPLES } from './engine';
 import Picker from './Picker';
 import type { Step } from './engine';
@@ -30,8 +30,25 @@ function Tip({ children }: { children: ReactNode }) {
 }
 
 function List({ title, tip, items, prev, cls, numbered }: { title: string; tip?: ReactNode; items: string[]; prev: string[]; cls: string; numbered?: boolean }) {
-  return (<div><h2>{title}{tip && <Tip>{tip}</Tip>}</h2><div className="bx">{items.length
-    ? items.map((t, k) => <span key={k + t} className={`ch ${cls}${prev.includes(t) ? '' : ' nw'}`}>{numbered ? `${k + 1}. ` : ''}{t}</span>)
+  const box = useRef<HTMLDivElement>(null), last = useRef(new Map<string, [number, number]>());
+  // Each chip keeps its identity across steps (label + how many times that label came before it),
+  // so when the front of a queue is taken, the others slide forward instead of jumping.
+  const seen = new Map<string, number>();
+  const keyed = items.map(t => { const n = seen.get(t) ?? 0; seen.set(t, n + 1); return [t + '#' + n, t] as const; });
+  useLayoutEffect(() => {
+    const now = new Map<string, [number, number]>(), calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    box.current?.querySelectorAll<HTMLElement>('[data-k]').forEach(c => {
+      const at: [number, number] = [c.offsetLeft, c.offsetTop], from = last.current.get(c.dataset.k!); // layout position: ignores scrolling and running animations
+      now.set(c.dataset.k!, at);
+      if (calm || !from || (from[0] == at[0] && from[1] == at[1])) return;
+      c.style.transition = 'none'; c.style.transform = `translate(${from[0] - at[0]}px, ${from[1] - at[1]}px)`;
+      c.getBoundingClientRect(); // apply the old position, then let it glide to the new one
+      c.style.transition = 'transform .35s ease'; c.style.transform = '';
+    });
+    last.current = now;
+  });
+  return (<div><h2>{title}{tip && <Tip>{tip}</Tip>}</h2><div className="bx" ref={box}>{items.length
+    ? keyed.map(([key, t], k) => <span key={key} data-k={key} className={`ch ${cls}${prev.includes(t) ? '' : ' nw'}`}>{numbered ? `${k + 1}. ` : ''}{t}</span>)
     : <em>empty</em>}</div></div>);
 }
 

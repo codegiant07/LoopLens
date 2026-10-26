@@ -26,6 +26,20 @@ console.log(next());
 
 const other = makeCounter();
 console.log(other());`],
+    ['Classes and this', `class Counter {
+  constructor(name) {
+    this.name = name;
+    this.count = 0;
+  }
+  increment() {
+    this.count++;
+    return this;
+  }
+}
+
+const c = new Counter("clicks");
+c.increment().increment();
+console.log(c.name, c.count);`],
   ] },
   { name: 'Timers & the task queue', samples: [
     ['Timers run by delay', `setTimeout(() => console.log("slow"), 100);
@@ -45,6 +59,15 @@ console.log("loop done", total);`],
 for (let j = 0; j < 3; j++) {
   setTimeout(() => console.log("let", j), 0);
 }`],
+    ['setInterval and clearInterval', `let ticks = 0;
+const id = setInterval(() => {
+  ticks++;
+  console.log("tick", ticks);
+  if (ticks === 3) clearInterval(id);
+}, 100);
+
+setTimeout(() => console.log("timeout at 250 ms"), 250);
+console.log("interval started");`],
   ] },
   { name: 'Promises & microtasks', samples: [
     ['setTimeout vs promise', `console.log("start");
@@ -75,6 +98,23 @@ console.log("sync");`],
 }, 0);
 
 setTimeout(() => console.log("task 2"), 0);`],
+    ['Promise.all vs Promise.race', `const slow = new Promise(resolve => setTimeout(() => resolve("slow"), 100));
+const fast = new Promise(resolve => setTimeout(() => resolve("fast"), 50));
+
+Promise.race([slow, fast]).then(v => console.log("race:", v));
+Promise.all([slow, fast]).then(v => console.log("all:", v.join(", ")));
+console.log("waiting...");`],
+    ['Promise .finally', `function load(ok) {
+  return ok ? Promise.resolve("data") : Promise.reject("network error");
+}
+
+load(true)
+  .then(v => console.log("got", v))
+  .finally(() => console.log("hide spinner (1)"));
+
+load(false)
+  .catch(e => console.log("failed:", e))
+  .finally(() => console.log("hide spinner (2)"));`],
   ] },
   { name: 'async / await', samples: [
     ['async/await order', `console.log("A");
@@ -112,6 +152,17 @@ async function run() {
 
 run();
 console.log("run() returned");`],
+    ['await Promise.all', `function fetchItem(name, ms) {
+  return new Promise(resolve => setTimeout(() => resolve(name), ms));
+}
+
+async function loadAll() {
+  console.log("start both at once");
+  const [a, b] = await Promise.all([fetchItem("users", 100), fetchItem("posts", 50)]);
+  console.log("done:", a, b);
+}
+
+loadAll();`],
   ] },
   { name: 'Errors', samples: [
     ['async error handling', `function fetchUser(id) {
