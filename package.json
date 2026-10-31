@@ -1,25 +1,32 @@
 {
-    "name": "js-execution-visualizer",
-    "private": true,
-    "version": "0.5.0",
-    "type": "module",
-    "scripts": {
-        "dev": "vite",
-        "build": "tsc --noEmit && vite build",
-        "test": "vitest run",
-        "typecheck": "tsc --noEmit"
-    },
-    "dependencies": {
-        "acorn": "8.11.3",
-        "react": "18.3.1",
-        "react-dom": "18.3.1"
-    },
-    "devDependencies": {
-        "@types/react": "18.3.3",
-        "@types/react-dom": "18.3.0",
-        "@vitejs/plugin-react": "4.3.1",
-        "typescript": "5.5.4",
-        "vite": "5.4.2",
-        "vitest": "2.0.5"
-    }
+  "name": "looplens",
+  "private": true,
+  "version": "0.5.0",
+  "description": "Interactive JavaScript visualizer for the call stack, event loop, promises, closures and scope.",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": "22.x"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build && vite build --ssr src/entry-server.tsx --outDir dist-ssr && node scripts/prerender.mjs",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "perf": "node scripts/lab-perf.mjs"
+  },
+  "dependencies": {
+    "acorn": "8.11.3",
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
+  },
+  "devDependencies": {
+    "@types/react": "18.3.3",
+    "@types/react-dom": "18.3.0",
+    "@vitejs/plugin-react": "4.3.1",
+    "typescript": "5.5.4",
+    "vite": "5.4.21",
+    "vitest": "2.1.9"
+  }
 }

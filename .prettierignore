@@ -1,0 +1,7 @@
+# Installed and generated files
+node_modules/
+dist/
+dist-ssr/
+package-lock.json
+# Binary and generated assets
+public/

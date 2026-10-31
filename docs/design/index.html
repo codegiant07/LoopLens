@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>LoopLens — design preview</title>
+    <style>
+      body {
+        margin: 0;
+      }
+      .dp-switch {
+        position: fixed;
+        left: 50%;
+        transform: translateX(-50%);
+        top: 8px;
+        z-index: 9;
+        display: flex;
+        gap: 2px;
+        padding: 3px;
+        border-radius: 999px;
+        background: rgba(20, 20, 24, 0.85);
+        backdrop-filter: blur(8px);
+        font: 12px system-ui;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+      }
+      .dp-switch button {
+        border: 0;
+        background: none;
+        color: #bbb;
+        padding: 4px 12px;
+        border-radius: 999px;
+        cursor: pointer;
+        font: inherit;
+      }
+      .dp-switch .on {
+        background: #fff;
+        color: #111;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="./main.tsx"></script>
+  </body>
+</html>
