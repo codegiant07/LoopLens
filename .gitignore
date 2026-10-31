@@ -1,0 +1,73 @@
+# LoopLens .gitignore
+# Follows GitGuardian's guidance: secrets never go into git (not even a private repo), because every clone,
+# fork and old commit keeps them. Secrets live in environment variables (Vercel → Settings → Environment
+# Variables). Files that can hold them are ignored below. If one was ever committed, rotate the secret:
+# deleting the file does not remove it from history.
+
+# ── Dependencies and build output (installed / rebuilt from source) ──
+node_modules/
+dist/
+dist-ssr/
+*.tsbuildinfo
+
+# ── Environment files (SITE_URL and any future keys) ──
+# Commit only a sample with placeholder values, named .env.example.
+.env
+.env.*
+!.env.example
+.envrc
+
+# ── Package-manager and network auth (can contain registry or login tokens) ──
+.npmrc
+.yarnrc
+.yarnrc.yml
+.netrc
+
+# ── Hosting and deploy CLIs (project/org IDs and tokens; Vercel CLI writes .vercel/) ──
+.vercel/
+.netlify/
+
+# ── Private keys, certificates and credential files ──
+*.pem
+*.key
+*.p8
+*.p12
+*.pfx
+*.jks
+*.keystore
+*.ppk
+id_rsa*
+id_ecdsa*
+id_ed25519*
+credentials.json
+*.credentials.json
+service-account*.json
+secrets.json
+secrets.yml
+secrets.yaml
+*.secret
+*.secrets
+
+# ── Secret-scanner local files (GitGuardian ggshield cache) ──
+.cache_ggshield
+
+# ── Local data and reports (never commit real data) ──
+*.sqlite
+*.sqlite3
+*.db
+*.dump
+coverage/
+.lighthouseci/
+lighthouse-report*
+
+# ── Tooling caches and logs ──
+.vite/
+*.log
+npm-debug.log*
+
+# ── Personal editor, OS and AI-assistant settings (can hold personal paths or keys) ──
+.claude/
+.vscode/
+.idea/
+*.swp
+.DS_Store
