@@ -71,3 +71,6 @@ npm-debug.log*
 .idea/
 *.swp
 .DS_Store
+
+# ── Private notes (interview prep) ──
+interview/
